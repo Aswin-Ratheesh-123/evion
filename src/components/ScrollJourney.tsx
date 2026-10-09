@@ -27,6 +27,35 @@ interface StationLayoutPos {
   state: 'inactive' | 'active' | 'completed';
 }
 
+const safeGetPointAtLength = (
+  path: SVGPathElement | null,
+  length: number,
+  totalLen: number
+): { x: number; y: number } => {
+  if (!path || !Number.isFinite(totalLen) || totalLen <= 0) {
+    return { x: 0, y: 0 };
+  }
+  try {
+    const clamped = Math.max(0, Math.min(totalLen, Number.isFinite(length) ? length : 0));
+    const pt = path.getPointAtLength(clamped);
+    if (Number.isFinite(pt.x) && Number.isFinite(pt.y)) {
+      return { x: pt.x, y: pt.y };
+    }
+  } catch {
+    // Graceful fallback for SVG DOMException
+  }
+  return { x: 0, y: 0 };
+};
+
+const unwrapAngle = (target: number, current: number): number => {
+  if (!Number.isFinite(target)) return Number.isFinite(current) ? current : 0;
+  if (!Number.isFinite(current)) return target;
+  let diff = (target - current) % 360;
+  if (diff < -180) diff += 360;
+  if (diff > 180) diff -= 360;
+  return current + diff;
+};
+
 export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
   vehicle,
   onTelemetryUpdate,
@@ -63,50 +92,55 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
   const speedRef = useRef(0);
   const activeStationIdRef = useRef<string | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+  const lastTelemetryRef = useRef({ progress: -1, speed: -1, soc: -1, charging: false });
 
   // Measure all section cards in DOM and compute the structured SVG route
   const measureAndGeneratePath = useCallback(() => {
     if (!containerRef.current) return;
 
-    const w = window.innerWidth;
-    const scrollHeight = Math.max(
-      document.documentElement.scrollHeight,
-      document.body.scrollHeight,
-      5000
-    );
+    try {
+      const w = window.innerWidth || 1440;
+      const scrollHeight = Math.max(
+        document.documentElement.scrollHeight || 0,
+        document.body.scrollHeight || 0,
+        5000
+      );
 
-    setDimensions({ width: w, height: scrollHeight });
+      setDimensions({ width: w, height: scrollHeight });
 
-    // Find all rendered section cards
-    const sectionElements = document.querySelectorAll<HTMLElement>('.journey-section-box');
-    const containerTop = containerRef.current.getBoundingClientRect().top + window.scrollY;
+      // Find all rendered section cards
+      const sectionElements = document.querySelectorAll<HTMLElement>('.journey-section-box');
+      const containerTop = containerRef.current.getBoundingClientRect().top + window.scrollY;
 
-    const boundsList: SectionBounds[] = [];
+      const boundsList: SectionBounds[] = [];
 
-    sectionElements.forEach((el, index) => {
-      const rect = el.getBoundingClientRect();
-      const top = rect.top + window.scrollY - containerTop;
-      const bottom = rect.bottom + window.scrollY - containerTop;
-      const left = rect.left;
-      const right = rect.right;
-      const width = rect.width;
-      const height = rect.height;
-      const centerX = (left + right) / 2;
+      sectionElements.forEach((el, index) => {
+        const rect = el.getBoundingClientRect();
+        const top = rect.top + window.scrollY - containerTop;
+        const bottom = rect.bottom + window.scrollY - containerTop;
+        const left = rect.left;
+        const right = rect.right;
+        const width = rect.width;
+        const height = rect.height;
+        const centerX = (left + right) / 2;
 
-      boundsList.push({
-        id: el.getAttribute('data-journey-id') || `sec-${index}`,
-        left,
-        right,
-        top,
-        bottom,
-        width,
-        height,
-        centerX,
+        boundsList.push({
+          id: el.getAttribute('data-journey-id') || `sec-${index}`,
+          left,
+          right,
+          top,
+          bottom,
+          width,
+          height,
+          centerX,
+        });
       });
-    });
 
-    const pathD = buildJourneyPath(boundsList, w, scrollHeight);
-    setSvgPathD(pathD);
+      const pathD = buildJourneyPath(boundsList, w, scrollHeight);
+      setSvgPathD(pathD);
+    } catch {
+      // Graceful fallback
+    }
   }, []);
 
   // Update on mount, resize, and layout changes
@@ -115,15 +149,19 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
       measureAndGeneratePath();
     }, 150);
 
+    let resizeTimer: number;
     const handleResize = () => {
-      measureAndGeneratePath();
+      clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        measureAndGeneratePath();
+      }, 100);
     };
 
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('orientationchange', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
+    window.addEventListener('orientationchange', handleResize, { passive: true });
 
     const resizeObserver = new ResizeObserver(() => {
-      measureAndGeneratePath();
+      handleResize();
     });
 
     if (containerRef.current) {
@@ -132,6 +170,7 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
 
     return () => {
       clearTimeout(timer);
+      clearTimeout(resizeTimer);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
       resizeObserver.disconnect();
@@ -143,12 +182,12 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
     if (!pathRef.current) return;
     try {
       const len = pathRef.current.getTotalLength();
-      if (len > 0) {
+      if (Number.isFinite(len) && len > 0) {
         setTotalPathLength(len);
 
         const positions: StationLayoutPos[] = STATIONS.map((station) => {
           const targetDist = (station.progressPercent / 100) * len;
-          const pt = pathRef.current?.getPointAtLength(Math.min(len, Math.max(0, targetDist))) || { x: 0, y: 0 };
+          const pt = safeGetPointAtLength(pathRef.current, targetDist, len);
           return {
             station,
             x: pt.x,
@@ -165,21 +204,13 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
     }
   }, [svgPathD]);
 
-  // Shortest angle unwrapping
-  const unwrapAngle = (target: number, current: number): number => {
-    let diff = (target - current) % 360;
-    if (diff < -180) diff += 360;
-    if (diff > 180) diff -= 360;
-    return current + diff;
-  };
-
   // Main 60fps RequestAnimationFrame Scroll-Tracking Engine
   useEffect(() => {
     let isRunning = true;
 
     const handleScroll = () => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const currentScroll = window.scrollY || window.pageYOffset;
+      const currentScroll = window.scrollY || window.pageYOffset || 0;
       const scrollRatio = maxScroll > 0 ? Math.min(1, Math.max(0, currentScroll / maxScroll)) : 0;
 
       targetDistRef.current = scrollRatio * totalPathLength;
@@ -203,33 +234,46 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
       if (!isRunning) return;
 
       const path = pathRef.current;
-      if (path && totalPathLength > 0) {
-        const lerpFactor = 0.14;
-        currentDistRef.current += (targetDistRef.current - currentDistRef.current) * lerpFactor;
+      if (path && Number.isFinite(totalPathLength) && totalPathLength > 0) {
+        const lerpFactor = 0.15;
+        const distDelta = targetDistRef.current - currentDistRef.current;
+        currentDistRef.current += distDelta * lerpFactor;
 
-        speedRef.current *= 0.88;
-        if (speedRef.current < 0.2) speedRef.current = 0;
+        speedRef.current *= 0.90;
+        if (speedRef.current < 0.1) speedRef.current = 0;
 
         const clampedDist = Math.min(totalPathLength, Math.max(0, currentDistRef.current));
         const progressRatio = clampedDist / totalPathLength;
 
+        // Update SVG Progress Line via direct strokeDashoffset (No React render cost)
         if (progressPathRef.current) {
           const offset = totalPathLength * (1 - progressRatio);
           progressPathRef.current.style.strokeDashoffset = `${offset}px`;
         }
 
-        const sampleOffset = 3;
-        const p1 = path.getPointAtLength(Math.max(0, Math.min(totalPathLength - sampleOffset, clampedDist)));
-        const p2 = path.getPointAtLength(Math.min(totalPathLength, clampedDist + sampleOffset));
+        // Tangent & position calculation with safe sampling
+        const sampleOffset = Math.max(2, Math.min(8, totalPathLength * 0.001));
+        const p1 = safeGetPointAtLength(path, clampedDist - sampleOffset, totalPathLength);
+        const p2 = safeGetPointAtLength(path, clampedDist + sampleOffset, totalPathLength);
+        const pCenter = safeGetPointAtLength(path, clampedDist, totalPathLength);
 
-        const rawAngle = (Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180) / Math.PI;
-        const smoothAngle = unwrapAngle(rawAngle, lastAngleRef.current);
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+
+        let rawAngle = lastAngleRef.current;
+        if (Math.abs(dx) > 0.001 || Math.abs(dy) > 0.001) {
+          rawAngle = (Math.atan2(dy, dx) * 180) / Math.PI;
+        }
+
+        const unwrapped = unwrapAngle(rawAngle, lastAngleRef.current);
+        const smoothAngle = lastAngleRef.current + (unwrapped - lastAngleRef.current) * 0.22;
         lastAngleRef.current = smoothAngle;
 
+        // Station Docking Check
         let nearbyStation: StationNode | null = null;
         let isAtStation = false;
-
         const activationThreshold = 65;
+
         stationPositions.forEach((pos) => {
           const distDiff = Math.abs(clampedDist - pos.lengthAtStation);
           if (distDiff < activationThreshold) {
@@ -238,6 +282,7 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
           }
         });
 
+        // Station Audio Trigger
         if (nearbyStation) {
           const stationObj = nearbyStation as StationNode;
           if (activeStationIdRef.current !== stationObj.id) {
@@ -253,35 +298,59 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
         }
 
         const calculatedSoc = Math.min(100, Math.round(38 + progressRatio * 62));
+        const roundedSpeed = Math.round(speedRef.current);
 
-        setStationPositions((prev) =>
-          prev.map((pos) => {
-            const distDiff = clampedDist - pos.lengthAtStation;
-            let state: 'inactive' | 'active' | 'completed' = 'inactive';
-            if (Math.abs(distDiff) < activationThreshold) {
-              state = 'active';
-            } else if (distDiff >= activationThreshold) {
-              state = 'completed';
-            }
-            return pos.state === state ? pos : { ...pos, state };
-          })
-        );
+        // Batch station status update only when actual state transition happens
+        let hasStateChanged = false;
+        const newStationPositions = stationPositions.map((pos) => {
+          const distDiff = clampedDist - pos.lengthAtStation;
+          let state: 'inactive' | 'active' | 'completed' = 'inactive';
+          if (Math.abs(distDiff) < activationThreshold) {
+            state = 'active';
+          } else if (distDiff >= activationThreshold) {
+            state = 'completed';
+          }
+          if (pos.state !== state) {
+            hasStateChanged = true;
+            return { ...pos, state };
+          }
+          return pos;
+        });
 
+        if (hasStateChanged) {
+          setStationPositions(newStationPositions);
+        }
+
+        // Update Car Visual State
         setCarState({
-          x: p1.x,
-          y: p1.y,
+          x: pCenter.x || p1.x,
+          y: pCenter.y || p1.y,
           angle: smoothAngle,
-          speed: Math.round(speedRef.current),
+          speed: roundedSpeed,
           isCharging: isAtStation,
           activeStation: nearbyStation,
           batterySoc: calculatedSoc,
           progress: progressRatio,
         });
 
-        if (onTelemetryUpdate) {
+        // Throttled Telemetry callback to avoid choking React tree
+        const lastT = lastTelemetryRef.current;
+        const shouldUpdateTelemetry =
+          Math.abs(progressRatio - lastT.progress) > 0.003 ||
+          Math.abs(roundedSpeed - lastT.speed) >= 1 ||
+          calculatedSoc !== lastT.soc ||
+          isAtStation !== lastT.charging;
+
+        if (shouldUpdateTelemetry && onTelemetryUpdate) {
+          lastTelemetryRef.current = {
+            progress: progressRatio,
+            speed: roundedSpeed,
+            soc: calculatedSoc,
+            charging: isAtStation,
+          };
           onTelemetryUpdate({
             progress: progressRatio,
-            speedKmh: Math.round(speedRef.current),
+            speedKmh: roundedSpeed,
             batterySoc: calculatedSoc,
             activeStation: nearbyStation,
             isCharging: isAtStation,

@@ -20,13 +20,17 @@ export const Car: React.FC<CarProps> = ({
   batterySoc,
   vehicle,
 }) => {
-  const speedFactor = Math.min(1, Math.max(0, speed / 80));
+  const safeX = Number.isFinite(x) ? x : 0;
+  const safeY = Number.isFinite(y) ? y : 0;
+  const safeAngle = Number.isFinite(angle) ? angle : 0;
+  const safeSpeed = Number.isFinite(speed) ? speed : 0;
+  const speedFactor = Math.min(1, Math.max(0, safeSpeed / 80));
 
   return (
     <div
-      className="absolute top-0 left-0 pointer-events-none z-30 transition-transform will-change-transform"
+      className="absolute top-0 left-0 pointer-events-none z-30 will-change-transform"
       style={{
-        transform: `translate3d(${x}px, ${y}px, 0px) translate(-50%, -50%) rotate(${angle}deg)`,
+        transform: `translate3d(${safeX}px, ${safeY}px, 0px) translate(-50%, -50%) rotate(${safeAngle}deg)`,
       }}
       aria-label="EVION Electric Vehicle traveling down the journey timeline"
     >
