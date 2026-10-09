@@ -51,7 +51,7 @@ export const ForBusinessesSection: React.FC<ForBusinessesSectionProps> = ({
             <div className="relative rounded-3xl overflow-hidden shadow-xl border border-black/10 group">
               <img
                 src="/images/business-fleet.jpg"
-                alt="IDSEVION Commercial Fleet and Workplace EV Charging Plaza"
+                alt="EVION Commercial Fleet and Workplace EV Charging Plaza"
                 className="w-full h-80 sm:h-[420px] object-cover group-hover:scale-105 transition-transform duration-700"
                 loading="lazy"
               />
@@ -63,7 +63,7 @@ export const ForBusinessesSection: React.FC<ForBusinessesSectionProps> = ({
                 </span>
                 <h3 className="text-xl font-bold text-white">Zero Upfront Capital Program</h3>
                 <p className="text-xs text-neutral-300">
-                  IDSEVION finances, installs, operates, and maintains high-power charging plazas with guaranteed revenue share.
+                  EVION finances, installs, operates, and maintains high-power charging plazas with guaranteed revenue share.
                 </p>
               </div>
             </div>

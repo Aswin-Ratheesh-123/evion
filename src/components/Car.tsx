@@ -28,7 +28,7 @@ export const Car: React.FC<CarProps> = ({
       style={{
         transform: `translate3d(${x}px, ${y}px, 0px) translate(-50%, -50%) rotate(${angle}deg)`,
       }}
-      aria-label="IDSEVION Electric Vehicle traveling down the journey timeline"
+      aria-label="EVION Electric Vehicle traveling down the journey timeline"
     >
       {/* Subtle Gray Environment Shadow & Contact Shadow for White Background Visibility */}
       <div

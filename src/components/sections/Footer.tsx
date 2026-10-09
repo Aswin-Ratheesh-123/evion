@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Zap, ArrowUp, CheckCircle2 } from 'lucide-react';
+import { ArrowUp, CheckCircle2 } from 'lucide-react';
 import { soundFx } from '../../utils/soundEffects';
 
 export const Footer: React.FC = () => {
@@ -23,13 +23,12 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-12 border-b border-neutral-800">
           <div className="md:col-span-4 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-[#111111] flex items-center justify-center border border-neutral-800">
-                <Zap className="w-5 h-5 text-[#65D900] fill-[#65D900]" />
-              </div>
-              <span className="font-extrabold text-xl tracking-tight text-white">
-                IDS<span className="text-[#65D900]">EVION</span>
-              </span>
+            <div className="flex items-center">
+              <img
+                src="/logo1.jpeg"
+                alt="EVION"
+                className="h-8 sm:h-9 w-auto object-contain rounded-md select-none"
+              />
             </div>
 
             <p className="text-xs text-[#A0A0A0] leading-relaxed max-w-sm">
@@ -76,7 +75,7 @@ export const Footer: React.FC = () => {
 
             {subscribed ? (
               <div className="p-3 rounded-xl bg-[#65D900]/15 border border-[#65D900]/30 text-[#65D900] text-xs font-mono">
-                ✓ Subscribed to IDSEVION Grid Updates
+                ✓ Subscribed to EVION Grid Updates
               </div>
             ) : (
               <form onSubmit={handleSubscribe} className="flex gap-2">
@@ -101,7 +100,7 @@ export const Footer: React.FC = () => {
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#A0A0A0] font-mono">
           <div>
-            © {new Date().getFullYear()} IDSEVION Inc. All rights reserved. Powering the electric mobility era.
+            © {new Date().getFullYear()} EVION Inc. All rights reserved. Powering the electric mobility era.
           </div>
 
           <div className="flex items-center gap-4">

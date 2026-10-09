@@ -44,7 +44,7 @@ export const ForDriversSection: React.FC = () => {
           </h2>
 
           <p className="text-base sm:text-lg text-[#555555] leading-relaxed">
-            From everyday commutes to long-distance journeys, IDSEVION makes EV charging simple, reliable, and accessible with zero hassle.
+            From everyday commutes to long-distance journeys, EVION makes EV charging simple, reliable, and accessible with zero hassle.
           </p>
         </div>
 
@@ -53,7 +53,7 @@ export const ForDriversSection: React.FC = () => {
             <div className="relative rounded-3xl overflow-hidden shadow-xl border border-black/10 group">
               <img
                 src="/images/driver-cockpit.jpg"
-                alt="IDSEVION In-Car Smart Navigation and Cockpit"
+                alt="EVION In-Car Smart Navigation and Cockpit"
                 className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
                 loading="lazy"
               />
@@ -61,7 +61,7 @@ export const ForDriversSection: React.FC = () => {
               
               <div className="absolute bottom-5 left-5 right-5 text-white">
                 <span className="px-2.5 py-1 rounded-full bg-[#65D900] text-black text-[10px] font-mono font-bold uppercase tracking-wider">
-                  IDSEVION In-Car Cockpit OS
+                  EVION In-Car Cockpit OS
                 </span>
                 <h3 className="text-lg font-bold mt-2 text-white">Zero-Tap Plug & Charge</h3>
                 <p className="text-xs text-neutral-300 mt-1">
@@ -74,7 +74,7 @@ export const ForDriversSection: React.FC = () => {
               <div className="p-3.5 rounded-2xl bg-white border border-black/10 shadow-sm flex items-start gap-3">
                 <Smartphone className="w-5 h-5 text-[#65D900] shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-xs font-bold text-[#050505]">IDSEVION Driver App</h4>
+                  <h4 className="text-xs font-bold text-[#050505]">EVION Driver App</h4>
                   <p className="text-[11px] text-[#555555] mt-0.5">Live bay availability & one-tap reservation.</p>
                 </div>
               </div>

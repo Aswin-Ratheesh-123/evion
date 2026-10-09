@@ -58,7 +58,7 @@ export const StationBookingModal: React.FC<StationBookingModalProps> = ({
               <Zap className="w-5 h-5 text-[#65D900] fill-[#65D900]" />
             </div>
             <div>
-              <h3 className="text-xl font-extrabold tracking-tight text-white">Deploy IDSEVION Infrastructure</h3>
+              <h3 className="text-xl font-extrabold tracking-tight text-white">Deploy EVION Infrastructure</h3>
               <p className="text-xs text-neutral-400 font-mono">Turnkey Ultra-Fast EV Hub Deployment & Fleet Solutions</p>
             </div>
           </div>
@@ -82,7 +82,7 @@ export const StationBookingModal: React.FC<StationBookingModalProps> = ({
             <div>
               <h4 className="text-2xl font-extrabold text-[#050505]">Consultation Request Received!</h4>
               <p className="text-sm text-[#555555] mt-2 max-w-md mx-auto">
-                Thank you, <strong className="text-[#050505]">{formData.name || 'Partner'}</strong>! An IDSEVION infrastructure engineer will deliver your custom site assessment and ROI financial model within 24 hours.
+                Thank you, <strong className="text-[#050505]">{formData.name || 'Partner'}</strong>! An EVION infrastructure engineer will deliver your custom site assessment and ROI financial model within 24 hours.
               </p>
             </div>
 

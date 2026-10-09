@@ -3,7 +3,7 @@ import type { MilestoneItem, VehicleModel, StationNode, EVComparisonModel } from
 export const VEHICLE_MODELS: VehicleModel[] = [
   {
     id: 'gt-one',
-    name: 'IDSEVION GT-One',
+    name: 'EVION GT-One',
     tagline: 'Ultra-Aerodynamic Luxury Fastback',
     colorName: 'Pearl White & Electric Green',
     primaryColor: '#FFFFFF',
@@ -16,7 +16,7 @@ export const VEHICLE_MODELS: VehicleModel[] = [
   },
   {
     id: 'hyperion-suv',
-    name: 'IDSEVION Hyperion SUV',
+    name: 'EVION Hyperion SUV',
     tagline: 'All-Terrain Intelligent Flagship',
     colorName: 'Titanium Silver & Dark Graphite',
     primaryColor: '#E8E8E8',
@@ -29,7 +29,7 @@ export const VEHICLE_MODELS: VehicleModel[] = [
   },
   {
     id: 'speeder-cyber',
-    name: 'IDSEVION Aero Concept',
+    name: 'EVION Aero Concept',
     tagline: 'Next-Gen Solid State Hypercar',
     colorName: 'Graphite Carbon & Bright Green',
     primaryColor: '#242424',
@@ -162,7 +162,7 @@ export const MILESTONES: MilestoneItem[] = [
     tag: '07 — EVERYWHERE',
     title: 'Wherever the Journey Takes You',
     subtitle: 'Unified Nationwide Arterial Network',
-    description: 'Whether charging at home overnight, at work during the day, or fast-charging along cross-country highway corridors, IDSEVION delivers one unified seamless ecosystem.',
+    description: 'Whether charging at home overnight, at work during the day, or fast-charging along cross-country highway corridors, EVION delivers one unified seamless ecosystem.',
     progressPercent: 89,
     powerKw: 350,
     batterySocTarget: 98,
@@ -296,8 +296,8 @@ export const EV_COMPARISON_MODELS: EVComparisonModel[] = [
     effWhKm: 260,
   },
   {
-    id: 'idsevion',
-    name: 'IDSEVION GT-One Flagship',
+    id: 'evion',
+    name: 'EVION GT-One Flagship',
     batteryKwh: 105,
     maxKw: 350,
     effWhKm: 148,

@@ -88,7 +88,7 @@ export const MilestonesJourney: React.FC<MilestonesJourneyProps> = ({
             >
               <img
                 src="/images/hero-charging.jpg"
-                alt="IDSEVION Plug and Charge Station"
+                alt="EVION Plug and Charge Station"
                 className="w-full h-80 sm:h-[420px] object-cover"
                 loading="lazy"
               />
@@ -218,7 +218,7 @@ export const MilestonesJourney: React.FC<MilestonesJourneyProps> = ({
             </h2>
 
             <p className="text-base sm:text-lg text-[#555555] leading-relaxed font-normal">
-              From workplaces and retail destinations to hotels and public spaces. IDSEVION integrates seamlessly into premium architectural urban environments.
+              From workplaces and retail destinations to hotels and public spaces. EVION integrates seamlessly into premium architectural urban environments.
             </p>
 
             {/* Destination Badges Selector */}
@@ -605,7 +605,7 @@ export const MilestonesJourney: React.FC<MilestonesJourneyProps> = ({
                 }}
                 className="px-8 py-4 rounded-2xl bg-white border border-black text-black hover:bg-black hover:text-white font-bold text-sm transition-all"
               >
-                <span>CONTACT IDSEVION</span>
+                <span>CONTACT EVION</span>
               </button>
             </div>
           </div>
@@ -614,7 +614,7 @@ export const MilestonesJourney: React.FC<MilestonesJourneyProps> = ({
           <div className="relative rounded-3xl overflow-hidden shadow-xl border border-black/10 mt-10 group max-w-5xl mx-auto">
             <img
               src="/images/future-megahub.jpg"
-              alt="IDSEVION Apex Megawatt EV Destination Superhub"
+              alt="EVION Apex Megawatt EV Destination Superhub"
               className="w-full h-80 sm:h-[480px] object-cover group-hover:scale-105 transition-transform duration-1000"
               loading="lazy"
             />

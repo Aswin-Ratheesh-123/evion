@@ -68,7 +68,7 @@ export const ReliabilitySection: React.FC = () => {
             </h2>
 
             <p className="text-base text-[#555555] leading-relaxed">
-              Never get stranded. IDSEVION infrastructure is built with carrier-grade reliability standards, hot-swappable power modules, and automated remote health healing.
+              Never get stranded. EVION infrastructure is built with carrier-grade reliability standards, hot-swappable power modules, and automated remote health healing.
             </p>
           </div>
 

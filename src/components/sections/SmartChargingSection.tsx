@@ -49,7 +49,7 @@ export const SmartChargingSection: React.FC<SmartChargingSectionProps> = ({
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold font-mono text-[#050505]">IDSEVION MATRIX-AI</span>
+                      <span className="text-sm font-bold font-mono text-[#050505]">EVION MATRIX-AI</span>
                       <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#65D900]/15 text-[#3FA800] border border-[#65D900]/30 font-bold">
                         {isChargingHere ? 'CONNECTED • CHARGING' : 'STANDBY READY'}
                       </span>

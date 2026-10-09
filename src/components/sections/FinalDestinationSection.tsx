@@ -93,7 +93,7 @@ export const FinalDestinationSection: React.FC<FinalDestinationSectionProps> = (
               }}
               className="px-8 py-4 rounded-2xl bg-white border border-black text-black hover:bg-black hover:text-white font-bold text-sm transition-all"
             >
-              <span>Contact IDSEVION</span>
+              <span>Contact EVION</span>
             </button>
           </div>
         </div>
@@ -101,7 +101,7 @@ export const FinalDestinationSection: React.FC<FinalDestinationSectionProps> = (
         <div className="mt-16 max-w-5xl mx-auto relative rounded-3xl overflow-hidden border border-black/10 shadow-xl group">
           <img
             src="/images/future-megahub.jpg"
-            alt="IDSEVION Apex Megawatt EV Destination Superhub"
+            alt="EVION Apex Megawatt EV Destination Superhub"
             className="w-full h-80 sm:h-[480px] object-cover group-hover:scale-105 transition-transform duration-1000"
             loading="lazy"
           />
